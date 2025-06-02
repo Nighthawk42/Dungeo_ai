@@ -24,7 +24,7 @@ Make sure you have the following installed on your PC:
 | **pip**              | Python package installer                                                                                                                  |
 | **Git**              | For downloading the repository                                                                                                            |
 | **Local LLM server** | E.g., [Oobabooga Text Generation WebUI](https://github.com/oobabooga/text-generation-webui), [LM Studio](https://lmstudio.ai/), or Ollama |
-| **AllTalk TTS**      | Local Text-to-Speech server (https://github.com/WhyNotHugo/alltalk](https://github.com/erew123/alltalk_tts.git)                              |
+| **AllTalk TTS**      | Local Text-to-Speech server [(https://github.com/WhyNotHugo/alltalk](https://github.com/erew123/alltalk_tts.git)](https://github.com/erew123/alltalk_tts)                              |
 
 ---
 
