@@ -33,11 +33,9 @@ Make sure you have the following installed on your PC:
 Open a terminal and run:
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/YOUR-REPO-NAME.git
-cd YOUR-REPO-NAME
+git clone https://github.com/Laszlobeer/Dungeo_ai.git
+cd Dungeo_ai
 ```
-
-> Replace `YOUR-USERNAME/YOUR-REPO-NAME` with your actual GitHub repo path.
 
 ---
 
