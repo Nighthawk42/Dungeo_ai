@@ -112,10 +112,10 @@ Make sure your voices are configured correctly. You may need `.wav` files for ch
 Go back to the cloned project directory and run:
 
 ```bash
-python main.py
+python dungeon ai.py
 ```
 
-> Replace `main.py` with whatever filename your script uses.
+> Replace `dungeon ai.py` with whatever filename your script uses.
 
 ---
 
