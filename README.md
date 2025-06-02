@@ -24,7 +24,7 @@ Make sure you have the following installed on your PC:
 | **pip**              | Python package installer                                                                                                                  |
 | **Git**              | For downloading the repository                                                                                                            |
 | **Local LLM server** | E.g., [Oobabooga Text Generation WebUI](https://github.com/oobabooga/text-generation-webui), [LM Studio](https://lmstudio.ai/), or Ollama |
-| **AllTalk TTS**      | Local Text-to-Speech server ([https://github.com/WhyNotHugo/alltalk](https://github.com/WhyNotHugo/alltalk))                              |
+| **AllTalk TTS**      | Local Text-to-Speech server (https://github.com/WhyNotHugo/alltalk](https://github.com/WhyNotHugo/alltalk](https://github.com/erew123/alltalk_tts.git)                              |
 
 ---
 
@@ -90,22 +90,7 @@ Run your LLM on `localhost:1234`. Options:
 
 ---
 
-### 🔊 5. Set Up AllTalk TTS (Optional but recommended)
 
-Install and run AllTalk TTS locally:
-
-```bash
-git clone https://github.com/WhyNotHugo/alltalk
-cd alltalk
-pip install -r requirements.txt
-python server.py
-```
-
-It should be available at `http://localhost:7851`.
-
-Make sure your voices are configured correctly. You may need `.wav` files for character voices in your `assets/voices/` directory or a similar location.
-
----
 
 ### 🚀 6. Run the Game
 
