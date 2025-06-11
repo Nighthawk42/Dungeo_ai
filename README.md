@@ -76,7 +76,7 @@ python main.py
 Available commands:  
 /? or /help       - Show this help message  
 /censored         - Toggle NSFW/SFW mode  comands
-/redo             - Repeat last AI response with a new generation  
+/redo             - Repeat last AI response with a new generation  banwords.txt for the band words
 /save             - Save the full adventure to adventure.txt  
 /load             - Load the adventure from adventure.txt  
 /change           - Switch to a different Ollama model  
