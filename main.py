@@ -249,7 +249,7 @@ def show_help():
     print("""
 Available commands:
 /? or /help       - Show this help message
-/censored         - Toggle NSFW/SFW mode
+/censored         - Toggle content filtering (SFW/NSFW mode)
 /redo             - Repeat last AI response with a new generation
 /save             - Save the full adventure to adventure.txt
 /load             - Load the adventure from adventure.txt
@@ -288,13 +288,16 @@ def sanitize_response(response, censored=False):
         pattern = re.compile(rf'\b{re.escape(phrase)}\b', re.IGNORECASE)
         response = pattern.sub('', response)
     
-    # Censor banned words if SFW mode is on
+    # Censor banned words only if SFW mode is on
     if censored:
         for word in BANWORDS:
             if word:  # Skip empty words
                 # Create regex pattern that matches the word with word boundaries
                 pattern = re.compile(r'\b' + re.escape(word) + r'\b', re.IGNORECASE)
                 response = pattern.sub('****', response)
+    # In NSFW mode, don't censor anything
+    else:
+        pass
     
     # Ensure the response ends with proper punctuation
     if response and response[-1] not in ['.', '!', '?']:
@@ -333,10 +336,10 @@ def ensure_complete_response(response):
 
 def main():
     global ollama_model, BANWORDS
-    censored = False
+    censored = False  # Start in NSFW mode by default
     last_ai_reply = ""
     conversation = ""
-    character_name = "Alex"
+    character_name = "Laszlo" #<-- defult name
     selected_genre = ""
     role = ""
 
@@ -396,6 +399,7 @@ def main():
         print(f"\n--- Adventure Start: {character_name} the {role} ---")
         print(f"Starting scenario: {role_starter}")
         print("Type '/?' or '/help' for commands.\n")
+        print("Content filtering is currently OFF (NSFW mode)")
         
         # Build initial conversation with role-specific starter
         conversation = DM_SYSTEM_PROMPT.format(
@@ -433,9 +437,11 @@ def main():
 
             if cmd == "/censored":
                 censored = not censored
-                print(f"SFW mode {'ON' if censored else 'OFF'}.")
+                mode = "SFW" if censored else "NSFW"
+                print(f"Content filtering {'ON' if censored else 'OFF'} ({mode} mode).")
                 # Reload banwords in case they changed
-                BANWORDS = load_banwords()
+                if censored:
+                    BANWORDS = load_banwords()
                 continue
 
             if cmd == "/redo":
