@@ -1,141 +1,94 @@
-# Dungeo_ai
-this is a dungeon ai run locally that use your llm 
-Here's a **step-by-step tutorial** on how to install and run your Python-based local AI Dungeon Master application from GitHub on a local PC.
+# 🤖 OpenSource AI Tool
+
+## 🌟 What is This?
+
+**OpenSource AI Tool** is a free and open-source project designed to [ this is a dungeon ai text base with alltalk tts].
+
+It’s created with ❤️ for hobbyists, developers, and learners.
+
+> 🛑 **Notice**: This software is free for **personal and educational use**.  
+> However, **if you use this project commercially** or **force-integrate it into any monetized or restricted system**,  
+> **YOU MUST CREDIT THE ORIGINAL AUTHOR.**
 
 ---
 
-## 🧙‍♂️ Local AI Dungeon Master: Installation & Running Guide
+## ⚙️ Requirements
 
-This project lets you roleplay as a character in a richly described world with a local AI acting as your Dungeon Master. It uses:
+- 🐍 Python `3.9+`
+- 📦 pip (Python package installer)
+- 🦙 ollama [[www.ollama.com](https://ollama.com/)]
+- 🧠 [Optional] GPU with CUDA for fast AI model inference
+- 🧰 git (optional but useful)
+- 🎤 [optional] alltalk tts for narrator [[AllTalk TTS GitHub Repository](https://github.com/erew123/alltalk_tts)]
+  
 
-* A local LLM (e.g., via `localhost:1234`)
-* AllTalk TTS Server (`localhost:7851`)
-* Python for runtime logic
-
----
-
-### ✅ 1. Requirements
-
-Make sure you have the following installed on your PC:
-
-| Tool                 | Description                                                                                                                               |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| **Python 3.9+**      | Main runtime                                                                                                                              |
-| **pip**              | Python package installer                                                                                                                  |
-| **Git**              | For downloading the repository                                                                                                            |
-| **Local LLM server** | E.g., [Oobabooga Text Generation WebUI](https://github.com/oobabooga/text-generation-webui), [LM Studio](https://lmstudio.ai/), or Ollama |
-| **AllTalk TTS**      | Local Text-to-Speech server [(https://github.com/WhyNotHugo/alltalk](https://github.com/erew123/alltalk_tts.git)](https://github.com/erew123/alltalk_tts)                              |
 
 ---
 
-### 📁 2. Clone the Repository
+## 📦 Installation
 
-Open a terminal and run:
+### 1️⃣ Clone the Repository
 
 ```bash
-git clone https://github.com/Laszlobeer/Dungeo_ai.git
-cd Dungeo_ai
+git clone https://github.com/yourusername/opensource-ai-tool.git
+cd opensource-ai-tool
 ```
 
----
-
-### 📦 3. Install Python Dependencies
-
-Create a virtual environment (optional but recommended):
+### 2️⃣ Create Virtual Environment (Recommended)
 
 ```bash
 python -m venv venv
-source venv/bin/activate  # On Windows use: venv\Scripts\activate
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-Install required packages:
+### 3️⃣ Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-If you don’t have a `requirements.txt`, create one with these contents:
-
-```txt
-requests
-sounddevice
-numpy
-soundfile
-```
-
-Then install it:
+> 💡 If `requirements.txt` is missing, install dependencies manually:
 
 ```bash
-pip install -r requirements.txt
+pip install torch transformers flask
 ```
 
 ---
 
-### 🤖 4. Set Up Local AI Model
+## 🚀 Usage
 
-Run your LLM on `localhost:1234`. Options:
-
-#### Option A: **Oobabooga WebUI**
-
-* Download from: [https://github.com/oobabooga/text-generation-webui](https://github.com/oobabooga/text-generation-webui)
-* Run the server and enable the `/v1/completions` API.
-* Use a GGUF model or compatible format.
-
-#### Option B: **LM Studio**
-
-* Download from: [https://lmstudio.ai](https://lmstudio.ai)
-* Choose a model and enable the OpenAI-compatible API.
-
----
-
-
-
-### 🚀 6. Run the Game
-
-Go back to the cloned project directory and run:
+### 🧪 Basic Example
 
 ```bash
-python dungeon ai.py
+python main.py 
 ```
 
-> Replace `dungeon ai.py` with whatever filename your script uses.
 
 ---
 
-### 🔄 7. Save & Resume Adventures
+## 📜 License & Credits
 
-The game supports:
+🆓 **MIT License**
 
-* `/save`: Saves your session to `adventure.txt`
-* `/load`: Restores it next time you run the program
-* `/redo`: Re-rolls the last Dungeon Master response
-* `/censored`: Toggles NSFW filtering
+- You are free to use, modify, and distribute this software.
+- **BUT** if you:
+  - Use this project commercially 🏢
+  - Integrate it into a monetized app 💵
+  - Fork it with modifications for public use
 
----
+👉 **You MUST give credit to the original author!**
 
-### 💡 Tips
+### ✍️ Example Credit
 
-* Make sure both the **AI model** and **TTS server** are running before you start the game.
-* You can change the default character voice in the `speak()` function by editing the `voice` filename.
-* If your LLM or TTS is on a different port or host, modify these lines:
-
-```python
-ALLTALK_API_URL = "http://localhost:7851/api/tts-generate"
-# AI completion endpoint: inside get_ai_response()
-"http://localhost:1234/v1/completions"
+```
+This project is based on OpenSource AI Tool by [Laszlo]([https://github.com/yourusername/opensource-ai-tool](https://github.com/Laszlobeer/Dungeo_ai))
 ```
 
----
 
-### ✅ Final Checklist
-
-| Component                         | Status |
-| --------------------------------- | ------ |
-| Python 3.x                        | ✅      |
-| Local AI LLM (`localhost:1234`)   | ✅      |
-| AllTalk TTS (`localhost:7851`)    | ✅      |
-| Script runs with `python main.py` | ✅      |
 
 ---
 
-Let me know if you'd like a `README.md` or a `requirements.txt` auto-generated for your GitHub repo.
+
+Thanks for supporting open source! 🫶
+
+---
