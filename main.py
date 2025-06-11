@@ -67,7 +67,8 @@ if installed_models:
         except ValueError:
             print("Invalid input. Please enter a number.")
 else:
-    ollama_model = input("Enter Ollama model name (e.g., llama3:instruct): ").strip() or "llama3:instruct"
+    model_input = input("Enter Ollama model name (e.g., llama3:instruct): ").strip()
+    ollama_model = model_input or "llama3:instruct"
 
 print(f"Using Ollama model: {ollama_model}\n")
 
@@ -199,7 +200,7 @@ def get_ai_response(prompt, model=ollama_model):
                     "min_p": 0.05,
                 }
             },
-            timeout=45
+            timeout=60  # Increased timeout for slower responses
         )
         response.raise_for_status()
         json_resp = response.json()
@@ -227,7 +228,7 @@ def speak(text, voice="FemaleBritishAccent_WhyLucyWhy_Voice_2.wav"):
             "autoplay": "true",
             "autoplay_volume": "0.8"
         }
-        response = requests.post(ALLTALK_API_URL, data=payload, timeout=15)
+        response = requests.post(ALLTALK_API_URL, data=payload, timeout=20)
         response.raise_for_status()
         
         if response.headers.get("Content-Type", "").startswith("audio/"):
@@ -261,6 +262,7 @@ def remove_last_ai_response(conversation):
     if pos == -1:
         return conversation
     
+    # Find the start of the last DM response
     prev_newline = conversation.rfind("\n", 0, pos)
     if prev_newline == -1:
         return ""
@@ -269,16 +271,21 @@ def remove_last_ai_response(conversation):
 
 def sanitize_response(response, censored=False):
     """Process response: remove questions and optionally censor words"""
+    # Skip processing if response is empty
+    if not response:
+        return response
+        
     # Remove common question patterns - only remove exact matches
     question_phrases = [
         "what will you do", "how do you respond", "what do you do",
-        "what is your next move", "what would you like to do"
+        "what is your next move", "what would you like to do",
+        "what would you like to say", "how will you proceed"
     ]
     
     # First, remove complete question sentences
     for phrase in question_phrases:
-        # Create a regex pattern that matches the phrase as a complete sentence
-        pattern = re.compile(rf'[.!?]*\s*{re.escape(phrase)}[.!?]*\s*', re.IGNORECASE)
+        # Create a regex pattern that matches the phrase ignoring case
+        pattern = re.compile(rf'\b{re.escape(phrase)}\b', re.IGNORECASE)
         response = pattern.sub('', response)
     
     # Censor banned words if SFW mode is on
@@ -311,7 +318,7 @@ def ensure_complete_response(response):
         return response
     
     # Check if response ends with proper punctuation
-    if response[-1] in ['.', '!', '?', '"', "'"]:
+    if response[-1] in ['.', '!', '?']:
         return response
     
     # Find the last natural break point
@@ -330,6 +337,8 @@ def main():
     last_ai_reply = ""
     conversation = ""
     character_name = "Alex"
+    selected_genre = ""
+    role = ""
 
     print("Do you want to load a saved adventure? (y/n)")
     if input().strip().lower() == "y" and os.path.exists("adventure.txt"):
@@ -339,11 +348,8 @@ def main():
             print("Adventure loaded.\n")
             last_dm_pos = conversation.rfind("Dungeon Master:")
             if last_dm_pos != -1:
-                next_newline = conversation.find("\n", last_dm_pos)
-                if next_newline == -1:
-                    reply = conversation[last_dm_pos + len("Dungeon Master:"):].strip()
-                else:
-                    reply = conversation[last_dm_pos + len("Dungeon Master:"):next_newline].strip()
+                # Extract everything after the last "Dungeon Master:"
+                reply = conversation[last_dm_pos + len("Dungeon Master:"):].strip()
                 print(f"Dungeon Master: {reply}")
                 speak(reply)
         except Exception as e:
@@ -465,6 +471,10 @@ def main():
                         with open("adventure.txt", "r", encoding="utf-8") as f:
                             conversation = f.read()
                         print("Adventure loaded.")
+                        # Extract last DM response
+                        last_dm_pos = conversation.rfind("Dungeon Master:")
+                        if last_dm_pos != -1:
+                            last_ai_reply = conversation[last_dm_pos + len("Dungeon Master:"):].strip()
                     except Exception as e:
                         logging.error(f"Error loading adventure: {e}")
                         print("Error loading adventure. Details logged.")
