@@ -1,10 +1,11 @@
 # 🤖 OpenSource AI Tool
 
-## 🌟 What is This?
+## 🌟 What is This Progect?
 
-**OpenSource AI Tool** is a free and open-source project designed to [ this is a dungeon ai text base with alltalk tts].
+**OpenSource AI Dungeon adventure** is a free and open-source project [ this is a dungeon ai text base with alltalk tts support].
 
-It’s created with ❤️ for hobbyists, developers, and learners.
+It’s created with ❤️ for all ages.
+create your adventure with ai Dungeo
 
 > 🛑 **Notice**: This software is free for **personal and educational use**.  
 > However, **if you use this project commercially** or **force-integrate it into any monetized or restricted system**,  
@@ -30,15 +31,22 @@ It’s created with ❤️ for hobbyists, developers, and learners.
 ### 1️⃣ Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/opensource-ai-tool.git
-cd opensource-ai-tool
+git clone git@github.com:Laszlobeer/Dungeo_ai.git
+cd Dungeo_ai
+
 ```
 
-### 2️⃣ Create Virtual Environment (Recommended)
+### 2A Create Virtual Environment 
+```bash
+python -m venv Dungeo_ai
+source Dungeo_ai/bin/activate  # On Windows: Dungeo_ai\Scripts\activate
+```
+
+### 2B Create Conda Enviroment
 
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+conda create -n dungeo_ai python=3.10 -y
+conda activate dungeo_ai
 ```
 
 ### 3️⃣ Install Dependencies
@@ -47,7 +55,7 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-> 💡 If `requirements.txt` is missing, install dependencies manually:
+> 💡 If `requirements.txt` is give you a error, install dependencies manually:
 
 ```bash
 pip install torch transformers flask
@@ -64,7 +72,7 @@ python main.py
 ```
 ## commands
 
-'''bash
+```bash
 Available commands:  
 /? or /help       - Show this help message  
 /censored         - Toggle NSFW/SFW mode  comands
@@ -73,7 +81,7 @@ Available commands:
 /load             - Load the adventure from adventure.txt  
 /change           - Switch to a different Ollama model  
 /exit             - Exit the game  
-'''
+```
 
 ---
 
