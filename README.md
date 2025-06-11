@@ -14,10 +14,10 @@ It’s created with ❤️ for hobbyists, developers, and learners.
 
 ## ⚙️ Requirements
 
-- 🐍 Python `3.9+`
+- 🐍 Python `3.10+`
 - 📦 pip (Python package installer)
 - 🦙 ollama [[www.ollama.com](https://ollama.com/)]
-- 🧠 [Optional] GPU with CUDA for fast AI model inference
+- 🧠 [NVIDIA CUDA Toolkit](https://developer.nvidia.com/cuda-toolkit) GPU with CUDA for fast AI model inference
 - 🧰 git (optional but useful)
 - 🎤 [optional] alltalk tts for narrator [[AllTalk TTS GitHub Repository](https://github.com/erew123/alltalk_tts)]
   
@@ -62,7 +62,18 @@ pip install torch transformers flask
 ```bash
 python main.py 
 ```
+## commands
 
+'''bash
+Available commands:  
+/? or /help       - Show this help message  
+/censored         - Toggle NSFW/SFW mode  comands
+/redo             - Repeat last AI response with a new generation  
+/save             - Save the full adventure to adventure.txt  
+/load             - Load the adventure from adventure.txt  
+/change           - Switch to a different Ollama model  
+/exit             - Exit the game  
+'''
 
 ---
 
