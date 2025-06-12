@@ -65,6 +65,12 @@ pip install torch transformers flask
 
 ## 🚀 Usage
 
+![Example 1](ex.png)
+![Example 2](ex2.png)
+![Example 3](ex3.png)
+![Example 4](ex4.png)
+
+
 ### 🧪 Basic Example
 
 ```bash
