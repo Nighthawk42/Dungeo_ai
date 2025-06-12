@@ -7,6 +7,7 @@ import subprocess
 import re
 import logging
 import datetime
+import textwrap
 
 # Configure logging
 log_filename = f"rpg_adventure_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
@@ -18,13 +19,13 @@ ALLTALK_API_URL = "http://localhost:7851/api/tts-generate"
 # Function to load banned words from file
 def load_banwords():
     banwords = []
-    if os.path.exists("banwords.txt"):
-        try:
+    try:
+        if os.path.exists("banwords.txt"):
             with open("banwords.txt", "r") as f:
                 banwords = [line.strip().lower() for line in f if line.strip()]
             logging.info(f"Loaded {len(banwords)} banned words")
-        except Exception as e:
-            logging.error(f"Error loading banwords: {e}")
+    except Exception as e:
+        logging.error(f"Error loading banwords: {e}")
     return banwords
 
 # Load banned words at startup
@@ -158,31 +159,29 @@ genres = {
     "5": ("Random", [])
 }
 
-# Updated system prompt with role-specific starter
+# Revised system prompt without 3-line rule
 DM_SYSTEM_PROMPT = """
-You are a masterful Dungeon Master guiding an immersive role-playing adventure set in a richly detailed {selected_genre} world. Your role is to narrate the story vividly and atmospherically, drawing the player into a world filled with mystery, danger, and wonder. You control all non-player characters (NPCs), the environment, and the unfolding events, responding dynamically to the player's choices and actions.
+You are a masterful Dungeon Master guiding an immersive role-playing adventure set in a richly detailed {selected_genre} world. Your responses MUST follow these rules:
 
-{character_name}, a {role}, stands at the threshold of an adventure that will test their courage, wit, and resolve. The world around them is alive with detail—the rustling of leaves in an ancient forest, the distant echo of footsteps in a cavernous dungeon, or the hum of a bustling city market. Describe the sights, sounds, and sensations that surround {character_name}, making the world feel tangible and real.
+1. RESPOND TO PLAYER ACTIONS:
+   - Always incorporate and react to the player's most recent action
+   - Make the player feel their choices directly impact the story
+   - Progress the narrative based on the player's decisions
 
-BEGIN THE ADVENTURE WITH THIS SPECIFIC SCENARIO: {role_starter}
+2. CONTENT RULES:
+   - NEVER ask direct questions (e.g., "What do you do?")
+   - ALWAYS use NPCs to interact through dialogue/actions
+   - ALWAYS use proper punctuation
+   - RESPOND ONLY AS DUNGEON MASTER
+   - Keep responses concise (max 150 tokens)
 
-As the Dungeon Master, your responses must be concise, strictly limited to a maximum of 150 tokens. Each response should set the scene and present {character_name} with meaningful choices and challenges. 
+3. NARRATIVE FLOW:
+   - Describe immediate consequences of player actions
+   - Advance the story with new challenges/revelations
+   - Maintain consistent world logic
 
-CRITICAL RULES:
-1. NEVER ask the player direct questions (e.g., "What do you do?" or "How do you respond?"). 
-2. Instead, use NPCs to engage and interact with the player naturally through dialogue and actions.
-3. Describe situations and consequences, then pause for the player's action.
-4. End each response with a narrative hook that invites {character_name} to take action without prompting.
-5. ALWAYS complete your thoughts with proper punctuation - never cut off mid-sentence.
-
-Guidelines:
-- Keep the narrative focused and engaging, with each word serving to deepen the immersion.
-- Develop tension and intrigue gradually, allowing the story to unfold naturally.
-- Ensure that every interaction offers {character_name} a chance to influence the world around them.
-- Maintain brevity to keep responses within the 150-token limit, ensuring clarity and impact.
-- Use NPCs to convey any interactions that require a response from {character_name}. 
-
-Continue the adventure from the starting scenario, developing the story based on {character_name}'s actions.
+ADVENTURE START: {character_name} the {role} begins with:
+{role_starter}
 """
 
 def get_ai_response(prompt, model=ollama_model):
@@ -195,12 +194,13 @@ def get_ai_response(prompt, model=ollama_model):
                 "stream": False,
                 "options": {
                     "temperature": 0.7,
-                    "num_predict": 350,
-                    "stop": [".", "!", "?", "\n\n", "\nPlayer:", "Player:"],
+                    "num_predict": 250,  # Increased for better storytelling
+                    "stop": [".", "!", "?", "\n\n", "Player:", "###", "---"],
                     "min_p": 0.05,
+                    "top_k": 40
                 }
             },
-            timeout=60  # Increased timeout for slower responses
+            timeout=60
         )
         response.raise_for_status()
         json_resp = response.json()
@@ -214,7 +214,6 @@ def get_ai_response(prompt, model=ollama_model):
 
 def speak(text, voice="FemaleBritishAccent_WhyLucyWhy_Voice_2.wav"):
     try:
-        # Skip speech if text is empty
         if not text.strip():
             return
             
@@ -235,13 +234,6 @@ def speak(text, voice="FemaleBritishAccent_WhyLucyWhy_Voice_2.wav"):
             audio_data = np.frombuffer(response.content, dtype=np.int16)
             sd.play(audio_data, samplerate=22050)
             sd.wait()
-        else:
-            logging.warning("AllTalk API did not return audio content")
-    except requests.exceptions.ConnectionError:
-        # Silent failure for connection issues
-        pass
-    except requests.exceptions.Timeout:
-        logging.warning("AllTalk API request timed out")
     except Exception as e:
         logging.error(f"Error in speech generation: {e}")
 
@@ -270,95 +262,66 @@ def remove_last_ai_response(conversation):
     return conversation[:prev_newline].strip()
 
 def sanitize_response(response, censored=False):
-    """Process response: remove questions and optionally censor words"""
-    # Skip processing if response is empty
+    """Process response: remove questions and ensure quality"""
     if not response:
-        return response
-        
-    # Remove common question patterns - only remove exact matches
+        return "The story continues..."
+    
+    # Remove common question patterns
     question_phrases = [
         "what will you do", "how do you respond", "what do you do",
         "what is your next move", "what would you like to do",
         "what would you like to say", "how will you proceed"
     ]
     
-    # First, remove complete question sentences
+    # Remove question sentences
     for phrase in question_phrases:
-        # Create a regex pattern that matches the phrase ignoring case
         pattern = re.compile(rf'\b{re.escape(phrase)}\b', re.IGNORECASE)
         response = pattern.sub('', response)
     
-    # Censor banned words only if SFW mode is on
+    # Censor banned words
     if censored:
         for word in BANWORDS:
-            if word:  # Skip empty words
-                # Create regex pattern that matches the word with word boundaries
+            if word:
                 pattern = re.compile(r'\b' + re.escape(word) + r'\b', re.IGNORECASE)
                 response = pattern.sub('****', response)
-    # In NSFW mode, don't censor anything
-    else:
-        pass
     
-    # Ensure the response ends with proper punctuation
-    if response and response[-1] not in ['.', '!', '?']:
-        # Find the last natural break point
-        last_break = max(response.rfind('.'), response.rfind('!'), response.rfind('?'))
-        if last_break != -1:
-            # Keep everything up to the last punctuation
-            response = response[:last_break+1]
-        else:
-            # If no punctuation found, add a period
-            response += '.'
-    
-    # Remove any double spaces and trim
+    # Clean up response
     response = re.sub(r'\s{2,}', ' ', response).strip()
+    
+    # Ensure proper ending
+    if response and response[-1] not in ('.', '!', '?', ':', ','):
+        response += '.'
     
     return response
 
-def ensure_complete_response(response):
-    """Ensure the response ends with a complete sentence"""
-    if not response:
-        return response
-    
-    # Check if response ends with proper punctuation
-    if response[-1] in ['.', '!', '?']:
-        return response
-    
-    # Find the last natural break point
-    last_break = max(response.rfind('.'), response.rfind('!'), response.rfind('?'))
-    
-    if last_break != -1:
-        # Keep everything up to the last complete sentence
-        return response[:last_break+1]
-    
-    # If no punctuation found, add a period
-    return response + '.'
-
 def main():
     global ollama_model, BANWORDS
-    censored = False  # Start in NSFW mode by default
+    censored = False
     last_ai_reply = ""
     conversation = ""
-    character_name = "Laszlo" #<-- defult name
+    character_name = "Laszlo"
     selected_genre = ""
     role = ""
+    adventure_started = False
 
-    print("Do you want to load a saved adventure? (y/n)")
-    if input().strip().lower() == "y" and os.path.exists("adventure.txt"):
-        try:
-            with open("adventure.txt", "r", encoding="utf-8") as f:
-                conversation = f.read()
-            print("Adventure loaded.\n")
-            last_dm_pos = conversation.rfind("Dungeon Master:")
-            if last_dm_pos != -1:
-                # Extract everything after the last "Dungeon Master:"
-                reply = conversation[last_dm_pos + len("Dungeon Master:"):].strip()
-                print(f"Dungeon Master: {reply}")
-                speak(reply)
-        except Exception as e:
-            logging.error(f"Error loading adventure: {e}")
-            conversation = ""
-    else:
+    # Check for saved adventure
+    if os.path.exists("adventure.txt"):
+        print("A saved adventure exists. Load it now? (y/n)")
+        if input().strip().lower() == "y":
+            try:
+                with open("adventure.txt", "r", encoding="utf-8") as f:
+                    conversation = f.read()
+                print("Adventure loaded.\n")
+                last_dm_pos = conversation.rfind("Dungeon Master:")
+                if last_dm_pos != -1:
+                    reply = conversation[last_dm_pos + len("Dungeon Master:"):].strip()
+                    print(f"Dungeon Master: {reply}")
+                    speak(reply)
+                    adventure_started = True
+            except Exception as e:
+                logging.error(f"Error loading adventure: {e}")
+    
+    if not adventure_started:
         print("Choose your adventure genre:")
         for key, (g, _) in genres.items():
             print(f"{key}: {g}")
@@ -367,7 +330,7 @@ def main():
             if gc in genres:
                 selected_genre, roles = genres[gc]
                 if selected_genre == "Random":
-                    available = [g for k, g in genres.items() if k != "5"]
+                    available = [genres[k] for k in genres if k != "5"]
                     selected_genre, roles = random.choice(available)
                 break
             print("Invalid selection. Please try again.")
@@ -388,9 +351,9 @@ def main():
                 if 0 <= idx < len(roles):
                     role = roles[idx]
                     break
+                print("Invalid selection. Please try again.")
             except ValueError:
-                pass
-            print("Invalid selection. Please try again.")
+                print("Invalid input. Please enter a number.")
         
         character_name = input("\nEnter your character's name: ").strip() or "Alex"
         
@@ -401,30 +364,29 @@ def main():
         print("Type '/?' or '/help' for commands.\n")
         print("Content filtering is currently OFF (NSFW mode)")
         
-        # Build initial conversation with role-specific starter
+        # Build initial prompt
         conversation = DM_SYSTEM_PROMPT.format(
             selected_genre=selected_genre,
             character_name=character_name,
             role=role,
             role_starter=role_starter
-        ) + "\n\n"
-        conversation += f"Setting: {selected_genre}\nPlayer Character: {character_name}, {role}\n\nDungeon Master: "
+        ) + "\n\nDungeon Master: "
         
         ai_reply = get_ai_response(conversation, ollama_model)
         if ai_reply:
-            # Sanitize and ensure complete response
             ai_reply = sanitize_response(ai_reply, censored)
-            ai_reply = ensure_complete_response(ai_reply)
             print(f"Dungeon Master: {ai_reply}")
             speak(ai_reply)
             conversation += ai_reply
             last_ai_reply = ai_reply
+            adventure_started = True
 
-    while True:
+    while adventure_started:
         try:
             user_input = input("\n> ").strip()
             if not user_input:
                 continue
+                
             cmd = user_input.lower()
 
             if cmd in ["/?", "/help"]:
@@ -439,7 +401,6 @@ def main():
                 censored = not censored
                 mode = "SFW" if censored else "NSFW"
                 print(f"Content filtering {'ON' if censored else 'OFF'} ({mode} mode).")
-                # Reload banwords in case they changed
                 if censored:
                     BANWORDS = load_banwords()
                 continue
@@ -450,9 +411,7 @@ def main():
                     conversation += "\nDungeon Master:"
                     ai_reply = get_ai_response(conversation, ollama_model)
                     if ai_reply:
-                        # Sanitize and ensure complete response
                         ai_reply = sanitize_response(ai_reply, censored)
-                        ai_reply = ensure_complete_response(ai_reply)
                         print(f"Dungeon Master: {ai_reply}")
                         speak(ai_reply)
                         conversation += f" {ai_reply}"
@@ -465,7 +424,7 @@ def main():
                 try:
                     with open("adventure.txt", "w", encoding="utf-8") as f:
                         f.write(conversation)
-                    print("Adventure saved.")
+                    print("Adventure saved to adventure.txt")
                 except Exception as e:
                     logging.error(f"Error saving adventure: {e}")
                     print("Error saving adventure. Details logged.")
@@ -477,7 +436,6 @@ def main():
                         with open("adventure.txt", "r", encoding="utf-8") as f:
                             conversation = f.read()
                         print("Adventure loaded.")
-                        # Extract last DM response
                         last_dm_pos = conversation.rfind("Dungeon Master:")
                         if last_dm_pos != -1:
                             last_ai_reply = conversation[last_dm_pos + len("Dungeon Master:"):].strip()
@@ -511,13 +469,23 @@ def main():
                     print("No installed models found. Using current model.")
                 continue
 
-            # Regular player input
+            # Player input - add to conversation history
             conversation += f"\nPlayer: {user_input}\nDungeon Master:"
+            
+            # Get AI response that incorporates player action
             ai_reply = get_ai_response(conversation, ollama_model)
+            
             if ai_reply:
-                # Sanitize and ensure complete response
                 ai_reply = sanitize_response(ai_reply, censored)
-                ai_reply = ensure_complete_response(ai_reply)
+                
+                # Verify AI incorporated player action
+                if user_input.lower() not in ai_reply.lower():
+                    # Regenerate if player action ignored
+                    print("(Refining story based on your action...)")
+                    conversation += " [IMPORTANT: Directly incorporate the player's action: " + user_input + "]\nDungeon Master:"
+                    ai_reply = get_ai_response(conversation, ollama_model)
+                    ai_reply = sanitize_response(ai_reply, censored)
+                
                 print(f"Dungeon Master: {ai_reply}")
                 speak(ai_reply)
                 conversation += f" {ai_reply}"
