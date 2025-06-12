@@ -194,8 +194,7 @@ def get_ai_response(prompt, model=ollama_model):
                 "stream": False,
                 "options": {
                     "temperature": 0.7,
-                    "num_predict": 250,  # Increased for better storytelling
-                    "stop": [".", "!", "?", "\n\n", "Player:", "###", "---"],
+                    "stop": ["\n\n"],
                     "min_p": 0.05,
                     "top_k": 40
                 }
