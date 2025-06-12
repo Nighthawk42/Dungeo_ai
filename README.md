@@ -20,7 +20,7 @@ create your adventure with ai Dungeo
 - 🦙 ollama [[www.ollama.com](https://ollama.com/)]
 - 🧠 [NVIDIA CUDA Toolkit](https://developer.nvidia.com/cuda-toolkit) GPU with CUDA for fast AI model inference
 - 🧰 git (optional but useful)
-- 🎤 [optional] alltalk tts for narrator [[AllTalk TTS GitHub Repository](https://github.com/erew123/alltalk_tts)]
+- 🎤 (optional) alltalk tts for narrator [AllTalk TTS GitHub Repository](https://github.com/erew123/alltalk_tts)
   
 
 
