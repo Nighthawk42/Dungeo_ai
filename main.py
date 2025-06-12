@@ -211,7 +211,7 @@ def get_ai_response(prompt, model=ollama_model):
         logging.error(f"Unexpected error in get_ai_response: {e}")
         return ""
 
-def speak(text, voice="FemaleBritishAccent_WhyLucyWhy_Voice_2.wav"):
+def speak(text, voice="FemaleBritishAccent_WhyLucyWhy_Voice_2.wav"): #<----- change to the voice you prefer
     try:
         if not text.strip():
             return
@@ -354,7 +354,7 @@ def main():
             except ValueError:
                 print("Invalid input. Please enter a number.")
         
-        character_name = input("\nEnter your character's name: ").strip() or "Alex"
+        character_name = input("\nEnter your character's name: ").strip() or "bob" #<---- chnage to a name for defult
         
         # Get role-specific starter
         role_starter = get_role_starter(selected_genre, role)
@@ -479,7 +479,7 @@ def main():
                 
                 # Verify AI incorporated player action
                 if user_input.lower() not in ai_reply.lower():
-                    # Regenerate if player action ignored
+                    # Regenerate if player action ignoredlungey basket
                     print("(Refining story based on your action...)")
                     conversation += " [IMPORTANT: Directly incorporate the player's action: " + user_input + "]\nDungeon Master:"
                     ai_reply = get_ai_response(conversation, ollama_model)
