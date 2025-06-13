@@ -1,14 +1,13 @@
-# 🤖 OpenSource AI Tool
+# 🤖 Open Source AI Tool: Dungeo AI
 
-## 🌟 What is This Progect?
+## 🌟 What Is This Project?
 
-**OpenSource AI Dungeon adventure** is a free and open-source project [ this is a dungeon ai text base with alltalk tts support].
+**Dungeo AI** is a free and open-source AI Dungeon-style text adventure with optional [AllTalk TTS](https://github.com/erew123/alltalk_tts) narrator support.
 
-It’s created with ❤️ for all ages.
-create your adventure with ai Dungeo
+Created with ❤️ for all ages—build your own interactive story with AI!
 
-> 🛑 **Notice**: This software is free for **personal and educational use**.  
-> However, **if you use this project commercially** or **force-integrate it into any monetized or restricted system**,  
+> 🛑 **Notice**: This software is free for **personal and educational use only**.  
+> If you use this project **commercially** or integrate it into any **monetized** or **restricted** system,  
 > **YOU MUST CREDIT THE ORIGINAL AUTHOR.**
 
 ---
@@ -16,13 +15,11 @@ create your adventure with ai Dungeo
 ## ⚙️ Requirements
 
 - 🐍 Python `3.10+`
-- 📦 pip (Python package installer)
-- 🦙 ollama [[www.ollama.com](https://ollama.com/)]
-- 🧠 [NVIDIA CUDA Toolkit](https://developer.nvidia.com/cuda-toolkit) GPU with CUDA for fast AI model inference
-- 🧰 git (optional but useful)
-- 🎤 (optional) alltalk tts for narrator [AllTalk TTS GitHub Repository](https://github.com/erew123/alltalk_tts)
-  
-
+- 📦 `pip` (Python package installer)
+- 🦙 [Ollama](https://ollama.com/) for LLM inference
+- 🧠 NVIDIA GPU with [CUDA Toolkit](https://developer.nvidia.com/cuda-toolkit) for performance (optional but recommended)
+- 🧰 `git` (optional, for cloning)
+- 🎤 [AllTalk TTS](https://github.com/erew123/alltalk_tts) for voice narration (optional)
 
 ---
 
@@ -31,18 +28,18 @@ create your adventure with ai Dungeo
 ### 1️⃣ Clone the Repository
 
 ```bash
-git clone git@github.com:Laszlobeer/Dungeo_ai.git
+git clone https://github.com/Laszlobeer/Dungeo_ai.git
 cd Dungeo_ai
-
 ```
 
-### 2A Create Virtual Environment 
+### 2A️⃣ Create Virtual Environment
+
 ```bash
 python -m venv Dungeo_ai
 source Dungeo_ai/bin/activate  # On Windows: Dungeo_ai\Scripts\activate
 ```
 
-### 2B Create Conda Enviroment
+### 2B️⃣ (Alternative) Create Conda Environment
 
 ```bash
 conda create -n dungeo_ai python=3.10 -y
@@ -55,7 +52,7 @@ conda activate dungeo_ai
 pip install -r requirements.txt
 ```
 
-> 💡 If `requirements.txt` is give you a error, install dependencies manually:
+> 💡 If you encounter issues with `requirements.txt`, install manually:
 
 ```bash
 pip install torch transformers flask
@@ -65,26 +62,28 @@ pip install torch transformers flask
 
 ## 🚀 Usage
 
-![Example 1](ex.png)
-![Example 3](ex3.png)
+![Example 1](ex.png)  
+![Example 2](ex2.png)  
+![Example 3](ex3.png)  
 ![Example 4](ex4.png)
-![Example 2](ex2.png)
 
 ### 🧪 Basic Example
 
 ```bash
-python main.py 
+python main.py
 ```
-## commands
+
+---
+
+## 💬 Available Commands
 
 ```bash
-Available commands:  
-/? or /help       - Show this help message  
-/censored         - Toggle NSFW/SFW mode  comands
-/redo             - Repeat last AI response with a new generation  banwords.txt for the band words
-/save             - Save the full adventure to adventure.txt  
-/load             - Load the adventure from adventure.txt  
-/change           - Switch to a different Ollama model  
+/? or /help       - Show help message  
+/censored         - Toggle NSFW/SFW mode (uses banwords.txt)  
+/redo             - Regenerate last AI response  
+/save             - Save current adventure to adventure.txt  
+/load             - Load adventure from adventure.txt  
+/change           - Switch Ollama model  
 /exit             - Exit the game  
 ```
 
@@ -94,25 +93,21 @@ Available commands:
 
 🆓 **MIT License**
 
-- You are free to use, modify, and distribute this software.
-- **BUT** if you:
-  - Use this project commercially 🏢
-  - Integrate it into a monetized app 💵
-  - Fork it with modifications for public use
+You are free to use, modify, and distribute this software.  
+However, if you:
+- Use it **commercially**
+- Include it in a **monetized app**
+- **Fork it publicly** with major modifications
 
-👉 **You MUST give credit to the original author!**
+👉 You **must** give credit to the original author!
 
 ### ✍️ Example Credit
 
 ```
-This project is based on OpenSource AI Tool by [Laszlo]([https://github.com/yourusername/opensource-ai-tool](https://github.com/Laszlobeer/Dungeo_ai))
+This project is based on Open Source AI Tool by Laszlo  
+https://github.com/Laszlobeer/Dungeo_ai
 ```
 
-
-
 ---
 
-
-Thanks for supporting open source! 🫶
-
----
+🙏 Thanks for supporting open source! 🫶
