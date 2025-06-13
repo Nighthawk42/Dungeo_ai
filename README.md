@@ -32,14 +32,14 @@ git clone https://github.com/Laszlobeer/Dungeo_ai.git
 cd Dungeo_ai
 ```
 
-### 2A️⃣ Create Virtual Environment
+### 2A️ Create Virtual Environment
 
 ```bash
 python -m venv Dungeo_ai
 source Dungeo_ai/bin/activate  # On Windows: Dungeo_ai\Scripts\activate
 ```
 
-### 2B️⃣ (Alternative) Create Conda Environment
+### 2B️ (Alternative) Create Conda Environment
 
 ```bash
 conda create -n dungeo_ai python=3.10 -y
